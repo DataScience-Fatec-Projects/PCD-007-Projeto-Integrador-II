@@ -7,24 +7,27 @@
 #Limpeza
 rm(list=ls())
 
-#Definição da pasta
-PATH<-"C:/git/fatec/PCD-007-Projeto-Integrador-II/Aulas_R/Aula05/Tareafa004/fonte_de_dados"
+#Pasta da tarefa, relativa a raiz do projeto
+#Abrir o RStudio pelo Aulas_R.Rproj: o wd ja nasce em .../Aulas_R
+BASE<-"Aula05/Tareafa004"
+FONTE<-file.path(BASE, "fonte_de_dados")
 
-#Ativar a pasta
-setwd(PATH)
+#Conferencia dos caminhos (tem que dar TRUE nos dois)
+file.exists(file.path(FONTE, "pib_municipal_2002_2020.csv"))
+file.exists(file.path(FONTE, "RM JUNDIAI.xlsx"))
 
 #carregar biblioteca usada
 library("openxlsx")
 
 
 #Ler pib
-pib_est_sp<- read.csv ("pib_municipal_2002_2020.csv", 
+pib_est_sp<- read.csv (file.path(FONTE, "pib_municipal_2002_2020.csv"), 
                       header = T,
                       sep =";",
                       dec = ",",
                       encoding = "latin1")
 
-reg_metro_jd<-read.xlsx("RM JUNDIAI.xlsx",
+reg_metro_jd<-read.xlsx(file.path(FONTE, "RM JUNDIAI.xlsx"),
                 startRow = 1, 
                 colNames = T)
 
@@ -78,7 +81,7 @@ censoreg_metro_jd
 #gravar o arquivo
 
 write.table(censoreg_metro_jd, 
-            file = "C:/git/fatec/PCD-007-Projeto-Integrador-II/Aulas_R/Aula05/Tareafa004/resultado_RMJD.csv",
+            file = file.path(BASE, "resultado_RMJD.csv"),
             sep =";",
             col.names = NA,
             fileEncoding = "UTF-16LE")
@@ -127,7 +130,7 @@ primeira_linha_rmjd
 #gravar o arquivo da solucao 2 (base completa do recorte)
 
 write.table(pib_rmjd,
-            file = "C:/git/fatec/PCD-007-Projeto-Integrador-II/Aulas_R/Aula05/Tareafa004/resultado_RMJD_innerjoin.csv",
+            file = file.path(BASE, "resultado_RMJD_innerjoin.csv"),
             sep =";",
             col.names = NA,
             fileEncoding = "UTF-16LE")
