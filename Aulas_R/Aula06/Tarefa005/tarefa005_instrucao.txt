@@ -1,0 +1,194 @@
+#AULA 005
+# ------------------------------------------------------------
+# Funções principais do dplyr:
+# - filter(): filtrar linhas
+# - select(): selecionar colunas
+# - mutate(): criar novas colunas
+# - arrange(): ordenar linhas
+# - summarise(): resumir dados
+# - group_by(): agrupar dados
+# - %>% : encadeia operações (pipe)
+# ------------------------------------------------------------
+#biblioteca
+library(dplyr)
+ 
+#utilizar os dados
+mtcars
+ 
+# 1. Selecionar colunas
+mtcars %>%
+  select(mpg, cyl)
+ 
+mtcars[,c(1,2)]
+ 
+ 
+# 2. Filtrar linhas
+mtcars %>%
+  filter(mpg > 20)
+ 
+mtcars[mtcars$mpg>20,]
+ 
+mtcars %>%
+  filter(mpg > 20, cyl == 4, am==0)
+ 
+ 
+mtcars$mpg>20
+mtcars$cyl==4
+corte1<-mtcars[mtcars$mpg>20,]
+corte1[corte1$cyl==4,]
+mtcars[mtcars$mpg>20,][mtcars[mtcars$mpg>20,]$cyl==4,]
+ 
+ 
+#Exer1 criar um filtro com disp < 140, am =1 e carb =2
+mtcars %>%
+  filter(disp <140, am == 1, carb==2)
+ 
+mtcars %>%
+  filter(disp <140)
+ 
+mtcars %>%
+  filter(disp <140, am == 1)
+ 
+mtcars %>%
+  filter(disp <140, am == 1, carb ==2)
+ 
+#exer2 criar um filtro com cyl=6, am =0 e disp <=140
+mtcars %>%
+  filter(cyl==6, am == 0, disp<=140)
+ 
+mtcars %>%
+  filter(cyl==6)
+ 
+mtcars %>%
+  filter(cyl==6, am == 0)
+ 
+mtcars %>%
+  filter(cyl==6, am == 0, disp<=140)
+ 
+mtcars
+# 3. Criar novas colunas com mutate
+mtcars %>%
+  mutate(km_litro = mpg * 0.4251)
+ 
+dados001<-mtcars
+dados001
+dados001$km_litro<-dados001$mpg*0.425
+ 
+ 
+# 4. Ordenar linhas com arrange
+mtcars %>%
+  arrange(mpg)  # ordem crescente
+ 
+mtcars %>%
+  arrange(desc(mpg))  # ordem decrescente
+ 
+# 5. Resumo simples com summarise
+mtcars %>%
+  summarise(media_mpg = mean(mpg))
+ 
+# 6. Agrupar e resumir
+mtcars
+ 
+mtcars %>%
+  group_by(cyl)%>%
+  summarise(media_mpg = mean(mpg))
+ 
+mtcars %>%
+  group_by(am) %>%
+  summarise(qtd = n())
+ 
+mtcars %>%
+  group_by(am) %>% 
+  summarise(media = mean(wt), mediana = median(wt))
+ 
+mtcars %>%
+  group_by(am, cyl) %>%
+  summarise(media = mean(wt), mediana = median(wt))
+ 
+ 
+#Useful functions
+#Center: mean(), median()
+#Spread: sd(), IQR(), mad()
+#Range: min(), max(),
+#Position: first(), last(), nth(),
+#Count: n(), n_distinct()
+#Logical: any(), all()
+ 
+ 
+# 7. Encadeando múltiplas operações
+mtcars %>%
+  filter(mpg > 20) %>%
+  mutate(km_litro = mpg * 0.4251) %>%
+  group_by(cyl) %>%
+  summarise(media_km_l = mean(km_litro))
+ 
+ 
+mtcars %>%
+  filter(mpg > 20) %>%
+  mutate(km_litro = mpg * 0.4251) %>%
+  group_by(cyl) %>%
+  summarise(media_km_l = mean(km_litro))
+ 
+ 
+# 8. Renomear colunas
+mtcars %>%
+  rename(milhas_por_galao = mpg)
+ 
+#Exercícios
+#Inicio do programa
+ 
+ 
+#Limpeza
+rm(list=ls())
+ 
+# Carregar o pacote necessário
+library(dplyr)
+library(readr)
+ 
+#Caminho
+PATH<-"C:/Users/dougl/Desktop/DOUGLAS/2025/1 Semestre/1S2025 JD CD PROJETO INTEGRADOR/AULA 006"
+setwd(PATH)
+ 
+ 
+# Lê os dados populacionais (com separador ; e encoding LATIN1 por causa dos acentos)
+dados001 <- read_csv2("estimativa_pop_idade_sexo_esp.csv", 
+                      locale = locale(encoding = "LATIN1"))
+ 
+ 
+dados0022<- read.csv ("estimativa_pop_idade_sexo_esp.csv", 
+                      header = T,
+                      sep =";",
+                      encoding = "latin1")
+ 
+ 
+ 
+# ------------------------------------------------------------
+# 1. Filtrar por município: Jundiaí
+ 
+# ------------------------------------------------------------
+# 2. Selecionar colunas: nome_mun, sexo, populacao
+ 
+# ------------------------------------------------------------
+# 3. Filtrar por ano e sexo: 2023 e Mulheres
+ 
+# ------------------------------------------------------------
+# 4. Criar nova coluna: população em milhares
+ 
+# ------------------------------------------------------------
+# 5. Ordenar por população: top 10
+ 
+# ------------------------------------------------------------
+# 6. Agrupar por município e somar população (2023)
+ 
+# ------------------------------------------------------------
+# 7. Média de população por faixa etária (2023)
+ 
+ 
+# ------------------------------------------------------------
+# 8. Contagem de registros por sexo
+ 
+# ------------------------------------------------------------
+# 9. Filtrar registros com população acima de 5000
+ 
+# ------------------------------------------------------------
+# 10. Renomear coluna nome_mun para municipio
