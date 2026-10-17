@@ -1,0 +1,92 @@
+Tarefa 006 Exercícios sobre o GGPLOT
+Vence hoje às 23:59
+•
+Vários envios permitidos
+Instruções
+# =================== 1. Gráfico de dispersão simples ===================
+ggplot(mtcars, aes(x = wt, y = mpg)) +        # Define dados e mapeia eixos
+  geom_point() +                              # Adiciona os pontos
+  labs(title = "Peso vs Consumo")             # Define o título do gráfico
+
+# EXERCÍCIO 1 | ISLR::Auto
+# Crie um gráfico de dispersão com horsepower no eixo X e mpg no eixo Y.
+# Interprete: carros mais potentes tendem a ter maior ou menor mpg?
+
+# =================== 2. Dispersão com cor por categoria ===================
+ggplot(mtcars, aes(x = wt, y = mpg, color = factor(cyl))) +  # Adiciona cor por número de cilindros
+  geom_point() +                                              # Adiciona os pontos
+  labs(title = "Dispersão por Número de Cilindros")           # Título
+
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +  # Adiciona cor por número de cilindros
+  geom_point() +                                              # Adiciona os pontos
+  labs(title = "Dispersão por Número de Cilindros")          # Título
+
+# EXERCÍCIO 2 | ISLR::Auto
+# Relacione weight (X) e mpg (Y), colorindo os pontos por factor(origin).
+# Interprete: a relação entre peso e consumo parece variar por origem?
+
+# =================== 3. Dispersão com variação de tamanho ===================
+ggplot(mtcars, aes(x = wt, y = mpg, size = hp)) +     # Mapeia tamanho dos pontos à variável hp
+  geom_point(alpha = 0.3) +                           # Adiciona os pontos com transparência
+  labs(title = "Dispersão com Tamanho por HP")        # Título
+
+# EXERCÍCIO 3 | ISLR::Auto
+# Faça weight (X) versus mpg (Y), usando size = horsepower e alpha = 0.6.
+# Interprete: o tamanho dos pontos ajuda a identificar padrões?
+
+# =================== 4. Gráfico de barras ===================
+ggplot(mtcars, aes(x = factor(cyl))) +        # Eixo x com número de cilindros (como fator)
+  geom_bar(fill = "steelblue") +              # Barras azuis
+  labs(title = "Contagem de Cilindros")       # Título
+
+dados001ISLR::Carseats
+
+
+# EXERCÍCIO 4 | ISLR::Carseats
+# Conte as lojas de cada categoria da variável Urban com geom_bar().
+# Interprete: existem mais lojas urbanas ou não urbanas?
+
+# =================== 5. Barras horizontais ===================
+ggplot(mtcars, aes(x = reorder(row.names(mtcars), mpg), y = mpg)) +  # Ordena modelos por mpg
+  geom_bar(stat = "identity", fill = "lightblue") +                  # Usa valores reais de mpg
+  coord_flip() +                                                     # Inverte os eixos
+  labs(title = "MPG por Modelo", x = "Modelo")                       # Título e rótulo x
+
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +  # Ordena modelos por mpg
+  geom_bar(stat = "identity", fill = "lightblue") +                  # Usa valores reais de mpg
+  coord_flip() +                                                     # Inverte os eixos
+  labs(title = "MPG por Modelo", x = "Modelo")                       # Título e rótulo x
+
+# EXERCÍCIO 5 | ISLR::Carseats
+# Calcule a média de Sales por ShelveLoc usando aggregate().
+# Faça barras horizontais com as médias, ordenadas por reorder().
+# Interprete: qual categoria tem maior média de vendas?
+
+# =================== 6. Barras lado a lado ===================
+ggplot(diamonds, aes(x = cut, fill = clarity)) +     # Mapeia corte e preenchimento por clareza
+  geom_bar(position = "dodge") +                     # Posiciona barras lado a lado
+  labs(title = "Clareza por Tipo de Corte")          # Título
+
+dados002<-ISLR::Carseats
+
+# EXERCÍCIO 6 | ISLR::Carseats
+# Compare Urban no eixo X e ShelveLoc como preenchimento das barras.
+# Utilize geom_bar(position = "dodge").
+# Interprete: como se distribuem as lojas nas combinações dessas categorias?
+
+# =================== 7. Barras empilhadas ===================
+ggplot(diamonds, aes(x = cut, fill = clarity)) +     # Mapeia corte e preenchimento por clareza
+  geom_bar(position = "stack") +                     # Barras empilhadas
+  labs(title = "Corte de Diamantes (Empilhado)")     # Título
+
+# EXERCÍCIO 7 | ISLR::Carseats
+# Refaça o exercício 6 com geom_bar(position = "stack").
+# Interprete: qual formato facilita mais comparar os grupos? Justifique.
+
+# =================== 8. Histograma ===================
+ggplot(iris, aes(x = Sepal.Length)) +                # Mapeia comprimento da sépala
+  geom_histogram(binwidth = 0.3, fill = "salmon", color = "black") +  # Define bin, cor de fundo e borda
+  labs(title = "Histograma do Comprimento da Sépala")                 # Título
+
+# EXERCÍCIO 8 | ISLR::Wage
+# Faça um histograma da variável wage; teste diferentes binwidth.
