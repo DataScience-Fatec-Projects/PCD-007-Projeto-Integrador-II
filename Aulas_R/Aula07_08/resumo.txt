@@ -1,0 +1,497 @@
+ibrary(dplyr)
+ 
+# Visualizando as primeiras linhas do dataset mtcars
+head(mtcars)
+ 
+# ------------------------------------------------------------
+# Funções principais do dplyr:
+# - filter(): filtrar linhas
+# - select(): selecionar colunas
+# - mutate(): criar novas colunas
+# - arrange(): ordenar linhas
+# - summarise(): resumir dados
+# - group_by(): agrupar dados
+# - %>% : encadeia operações (pipe)
+# ------------------------------------------------------------
+ 
+# 1. Selecionar colunas
+mtcars %>%
+  select(mpg, cyl)
+ 
+# 2. Filtrar linhas
+mtcars %>%
+  filter(cyl > 6)
+ 
+mtcars %>%
+  filter(mpg > 20, cyl == 4)
+ 
+# 3. Criar novas colunas com mutate
+mtcars %>%
+  mutate(km_litro = mpg * 0.4251)
+ 
+# 4. Ordenar linhas com arrange
+mtcars
+mtcars %>%
+  arrange(mpg)  # ordem crescente
+ 
+mtcars %>%
+  arrange(desc(mpg))  # ordem decrescente
+ 
+# 5. Resumo simples com summarise
+mtcars %>%
+  summarise(media_mpg = mean(mpg))
+ 
+# 6. Agrupar e resumir
+mtcars %>%
+  group_by(cyl)%>%
+  summarise(media_mpg = mean(mpg))
+ 
+mtcars %>%
+  group_by(am) %>%
+  summarise(qtd = n())
+ 
+mtcars %>%
+  group_by(am) %>% 
+  summarise(media = mean(wt))
+ 
+#Useful functions
+#Center: mean(), median()
+#Spread: sd(), IQR(), mad()
+#Range: min(), max(),
+#Position: first(), last(), nth(),
+#Count: n(), n_distinct()
+#Logical: any(), all()
+ 
+ 
+# 7. Encadeando múltiplas operações
+mtcars %>%
+  filter(mpg > 20) %>%
+  mutate(km_litro = mpg * 0.4251) %>%
+  group_by(cyl) %>%
+  summarise(media_km_l = mean(km_litro))
+ 
+mtcars %>%
+  filter(mpg > 20) %>%
+  mutate(km_litro = mpg * 0.4251)%>%
+  group_by(cyl)%>%
+  summarise(media_km_l = mean(km_litro))
+ 
+ 
+# 8. Renomear colunas
+mtcars %>%
+  rename(milhas_por_galao = mpg)
+ 
+ 
+library(ggplot2)
+library(ISLR)
+ 
+# =================== 1. Gráfico de dispersão simples ===================
+mtcars
+ 
+ggplot(mtcars, aes(x = wt, y = mpg)) +        # Define dados e mapeia eixos
+  geom_point() +                              # Adiciona os pontos
+  labs(title = "Peso vs Consumo")             # Define o título do gráfico
+ 
+# EXERCÍCIO 1 | ISLR::Auto
+# Crie um gráfico de dispersão com horsepower no eixo X e mpg no eixo Y.
+# Interprete: carros mais potentes tendem a ter maior ou menor mpg?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 1 -------------------
+names(ISLR::Auto)
+dados001<-ISLR::Auto
+ggplot(dados001, aes(x = horsepower, y = mpg)) +
+  geom_point() +
+  labs(title = "Potência e consumo", x = "Potência", y = "Milhas por galão")
+# Interpretação esperada: Tendência negativa: maior potência costuma estar associada a menor mpg.
+ 
+ 
+MTCARS<-mtcars
+ 
+ 
+# =================== 2. Dispersão com cor por categoria ===================
+ggplot(mtcars, aes(x = wt, y = mpg, color = factor(cyl))) +  # Adiciona cor por número de cilindros
+  geom_point() +                                              # Adiciona os pontos
+  labs(title = "Dispersão por Número de Cilindros")           # Título
+ 
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +  # Adiciona cor por número de cilindros
+  geom_point() +                                              # Adiciona os pontos
+  labs(title = "Dispersão por Número de Cilindros")          # Título
+
+ 
+# EXERCÍCIO 2 | ISLR::Auto
+# Relacione weight (X) e mpg (Y), colorindo os pontos por factor(origin).
+# Interprete: a relação entre peso e consumo parece variar por origem?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 2 -------------------
+ggplot(ISLR::Auto, aes(x = weight, y = mpg, color = factor(origin))) +
+  geom_point() +
+  labs(title = "Peso e consumo por origem", color = "origem")+
+  theme(plot.title = element_text(
+    hjust = 0,
+    size = 11,
+    face = "bold",
+    color = "darkblue"))
+ 
+  
+  # Interpretação esperada: Em geral, carros mais pesados têm menor mpg; compare a posição dos grupos de origem.
+ 
+ 
+ 
+# =================== 3. Dispersão com variação de tamanho ===================
+ggplot(mtcars, aes(x = wt, y = mpg, size = hp)) +     # Mapeia tamanho dos pontos à variável hp
+  geom_point(alpha = 0.3) +                           # Adiciona os pontos com transparência
+  labs(title = "Dispersão com Tamanho por HP")        # Título
+ 
+# EXERCÍCIO 3 | ISLR::Auto
+# Faça weight (X) versus mpg (Y), usando size = horsepower e alpha = 0.6.
+# Interprete: o tamanho dos pontos ajuda a identificar padrões?
+ 
+ 
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 3 -------------------
+ggplot(ISLR::Auto, aes(x = weight, y = mpg, size = horsepower)) +
+  geom_point(alpha = 0.2) +
+  labs(title = "Peso, consumo e potência", size = "Potência")
+# Interpretação esperada: Pontos maiores representam mais potência; carros pesados e potentes tendem a ter menor mpg.
+ 
+ 
+ 
+# =================== 4. Gráfico de barras ===================
+ggplot(mtcars, aes(x = factor(cyl))) +        # Eixo x com número de cilindros (como fator)
+  geom_bar(fill = "steelblue") +              # Barras azuis
+  labs(title = "Contagem de Cilindros")       # Título
+ 
+dados001ISLR::Carseats
+ 
+ 
+# EXERCÍCIO 4 | ISLR::Carseats
+# Conte as lojas de cada categoria da variável Urban com geom_bar().
+# Interprete: existem mais lojas urbanas ou não urbanas?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 4 -------------------
+ggplot(ISLR::Carseats, aes(x = Urban)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Lojas por localização", x = "Urbana", y = "Quantidade")
+# Interpretação esperada: Compare as alturas das barras para identificar a categoria mais frequente.
+ 
+# =================== 5. Barras horizontais ===================
+ggplot(mtcars, aes(x = reorder(row.names(mtcars), mpg), y = mpg)) +  # Ordena modelos por mpg
+  geom_bar(stat = "identity", fill = "lightblue") +                  # Usa valores reais de mpg
+  coord_flip() +                                                     # Inverte os eixos
+  labs(title = "MPG por Modelo", x = "Modelo")                       # Título e rótulo x
+ 
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +  # Ordena modelos por mpg
+  geom_bar(stat = "identity", fill = "lightblue") +                  # Usa valores reais de mpg
+  coord_flip() +                                                     # Inverte os eixos
+  labs(title = "MPG por Modelo", x = "Modelo")                       # Título e rótulo x
+ 
+ 
+ 
+# EXERCÍCIO 5 | ISLR::Carseats
+# Calcule a média de Sales por ShelveLoc usando aggregate().
+# Faça barras horizontais com as médias, ordenadas por reorder().
+# Interprete: qual categoria tem maior média de vendas?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 5 -------------------
+medias_vendas <- aggregate(Sales ~ ShelveLoc, data = ISLR::Carseats, FUN = mean)
+ 
+medias_vendas1<-ISLR::Carseats%>%
+  group_by(ShelveLoc)%>%
+  summarise(Sales = mean(Sales))
+medias_vendas1
+ 
+ggplot(medias_vendas1, aes(x = reorder(ShelveLoc, Sales), y = Sales)) +
+  geom_col(fill = "lightblue") +
+  coord_flip() +
+  labs(title = "Média de vendas por prateleira", x = "Qualidade", y = "Vendas médias")
+ 
+ 
+ggplot(medias_vendas1, aes(x = reorder(ShelveLoc, Sales, decreasing=T), y = Sales)) +
+  geom_col(fill = "lightblue") +
+  coord_flip() +
+  labs(title = "Média de vendas por prateleira", x = "Qualidade", y = "Vendas médias")
+ 
+ 
+# Interpretação esperada: A categoria Good tende a apresentar a maior média de vendas.
+ 
+# =================== 6. Barras lado a lado ===================
+diamonds
+ 
+ggplot(diamonds, aes(x = cut, fill = clarity)) +     # Mapeia corte e preenchimento por clareza
+  geom_bar(position = "dodge") +                     # Posiciona barras lado a lado
+  labs(title = "Clareza por Tipo de Corte")          # Título
+ 
+dados002<-ISLR::Carseats
+ 
+# EXERCÍCIO 6 | ISLR::Carseats
+# Compare Urban no eixo X e ShelveLoc como preenchimento das barras.
+# Utilize geom_bar(position = "dodge").
+# Interprete: como se distribuem as lojas nas combinações dessas categorias?
+ 
+ 
+ 
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 6 -------------------
+ggplot(ISLR::Carseats, aes(x = Urban, fill = ShelveLoc)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Lojas por localização e país", x = "Urbana", y = "Quantidade")
+# Interpretação esperada: Compare as contagens dentro de cada categoria Urban para os grupos US.
+ 
+# =================== 7. Barras empilhadas ===================
+ggplot(diamonds, aes(x = cut, fill = clarity)) +     # Mapeia corte e preenchimento por clareza
+  geom_bar(position = "stack") +                     # Barras empilhadas
+  labs(title = "Corte de Diamantes (Empilhado)")     # Título
+ 
+# EXERCÍCIO 7 | ISLR::Carseats
+# Refaça o exercício 6 com geom_bar(position = "stack").
+# Interprete: qual formato facilita mais comparar os grupos? Justifique.
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 7 -------------------
+ggplot(ISLR::Carseats, aes(x = Urban, fill = ShelveLoc)) +
+  geom_bar(position = "stack") +
+  labs(title = "Lojas por localização e país (empilhado)", x = "Urbana", y = "Quantidade")
+# Interpretação esperada: Lado a lado facilita comparar grupos; empilhado evidencia os totais.
+ 
+# =================== 8. Histograma ===================
+ggplot(iris, aes(x = Sepal.Length)) +                # Mapeia comprimento da sépala
+  geom_histogram(binwidth = 0.3, fill = "salmon", color = "black") +  # Define bin, cor de fundo e borda
+  labs(title = "Histograma do Comprimento da Sépala")                 # Título
+ 
+iris
+# EXERCÍCIO 8 | ISLR::Wage
+# Faça um histograma da variável wage; teste diferentes binwidth.
+ 
+ 
+names(ISLR::Wage)
+ 
+ 
+ 
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 8 -------------------
+ggplot(ISLR::Wage, aes(x = wage)) +
+  geom_histogram(binwidth = 20, fill = "salmon", color = "black") +
+  labs(title = "Distribuição dos salários", x = "Salário", y = "Frequência")
+# Experimente trocar binwidth = 20 por 10 ou 30.
+# Interpretação esperada: Distribuição assimétrica à direita, com concentração em faixas salariais mais baixas.
+ 
+# =================== 9. Boxplot ===================
+ggplot(iris, aes(x = Species, y = Sepal.Length)) +   # Mapeia espécie e comprimento
+  geom_boxplot(fill = "orange") +                    # Adiciona boxplots laranja
+  labs(title = "Boxplot por Espécie")                # Título
+ 
+# EXERCÍCIO 9 | ISLR::Wage
+# Compare wage por education usando geom_boxplot().
+# Interprete: qual grupo tem maior mediana? Existem valores atípicos?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 9 -------------------
+ggplot(ISLR::Wage, aes(x = education, y = wage)) +
+  geom_boxplot(fill = "orange") +
+  labs(title = "Salários por escolaridade", x = "Escolaridade", y = "Salário") +
+  coord_flip()
+# Interpretação esperada: O grupo de maior escolaridade tende a ter a maior mediana; observe pontos atípicos.
+ 
+# =================== 10. Violin plot ===================
+ggplot(iris, aes(x = Species, y = Sepal.Length)) +   # Mapeia espécie e comprimento
+  geom_violin(fill = "lightgreen") +                 # Adiciona violino verde claro
+  labs(title = "Violin Plot por Espécie")            # Título
+ 
+# EXERCÍCIO 10 | ISLR::Wage
+# Compare a distribuição de wage por education com geom_violin().
+# Interprete: o violino mostra detalhes não tão evidentes no boxplot?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 10 -------------------
+ggplot(ISLR::Wage, aes(x = education, y = wage)) +
+  geom_violin(fill = "lightgreen") +
+  labs(title = "Distribuição salarial por escolaridade", x = "Escolaridade", y = "Salário") +
+  coord_flip()
+# Interpretação esperada: O violino evidencia concentrações e formatos da distribuição além dos quartis.
+ 
+ 
+# =================== 11. Densidade ===================
+ggplot(iris, aes(x = Petal.Length, fill = Species)) +  # Mapeia comprimento da pétala com preenchimento
+  geom_density(alpha = 0.5) +                          # Densidade com transparência
+  labs(title = "Densidade por Espécie")                # Título
+ 
+# EXERCÍCIO 11 | ISLR::Smarket
+# Faça curvas de densidade de Today, preenchidas por Direction.
+# Interprete: como diferem as distribuições em dias Up e Down?
+# Atenção: Direction é definida a partir do sinal de Today.
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 11 -------------------
+ggplot(ISLR::Smarket, aes(x = Today, fill = Direction)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Retornos por direção do mercado", x = "Retorno diário")
+# Interpretação esperada: Down corresponde a retornos negativos e Up a positivos por definição da variável.
+ 
+# =================== 12. Linha (série temporal) ===================
+ggplot(economics, aes(x = date, y = unemploy)) +     # Mapeia datas e desemprego
+  geom_line(color = "purple") +                      # Linha roxa
+  labs(title = "Desemprego ao Longo do Tempo")       # Título
+ 
+# EXERCÍCIO 12 | ISLR::Smarket
+# Calcule a média de Volume por Year com aggregate().
+# Represente a evolução anual das médias usando geom_line().
+# Interprete: há tendência de crescimento ou redução do volume médio?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 12 -------------------
+volume_anual <- aggregate(Volume ~ Year, data = ISLR::Smarket, FUN = mean)
+volume_anual
+ISLR::Smarket
+ 
+volume_anual_1<-ISLR::Smarket%>%
+  group_by(Year)%>%
+  summarise(Volume = mean(Volume))
+volume_anual_1
+ 
+ 
+ggplot(volume_anual_1, aes(x = Year, y = Volume)) +
+  geom_line(color = "purple") +
+  geom_point() +
+  labs(title = "Volume médio anual", x = "Ano", y = "Volume médio")
+# Interpretação esperada: Observe a trajetória das médias anuais; no período, há tendência geral de aumento.
+ 
+# =================== 13. Área ===================
+ggplot(economics, aes(x = date, y = psavert)) +      # Mapeia data e taxa de poupança
+  geom_area(fill = "skyblue") +                      # Preenche com azul claro
+  labs(title = "Poupança Pessoal nos EUA")           # Título
+ 
+# EXERCÍCIO 13 | ISLR::Smarket
+# Use as médias anuais de Volume do exercício 12 para criar geom_area().
+# Interprete: que diferenças visuais existem entre linha e área?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 13 -------------------
+volume_anual <- aggregate(Volume ~ Year, data = ISLR::Smarket, FUN = mean)
+ggplot(volume_anual_1, aes(x = Year, y = Volume)) +
+  geom_area(fill = "skyblue") +
+  labs(title = "Volume médio anual (área)", x = "Ano", y = "Volume médio")
+# Interpretação esperada: A área enfatiza magnitude acumulada visualmente; a linha destaca variações ao longo do tempo.
+ 
+# =================== 14. Tendência com LOESS ===================
+ggplot(mtcars, aes(x = wt, y = mpg)) +               # Mapeia peso e mpg
+  geom_point() +                                     # Adiciona pontos
+  geom_smooth(method = "loess", color = "red") +     # Adiciona linha de suavização LOESS
+  labs(title = "Tendência: Peso vs MPG")             # Título
+ 
+# EXERCÍCIO 14 | ISLR::Auto
+# Relacione horsepower (X) e mpg (Y) e acrescente curva LOESS.
+# Interprete: a relação parece linear ou apresenta curvaturas?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 14 -------------------
+ggplot(ISLR::Auto, aes(x = horsepower, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "loess", color = "red") +
+  labs(title = "Tendência de consumo por potência")
+# Interpretação esperada: A curva revela relação negativa não perfeitamente linear.
+ 
+# =================== 15. Facetas com wrap ===================
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +  # Mapeia comprimento e largura da pétala
+  geom_point() +                                         # Adiciona pontos
+  facet_wrap(~Species) +                                 # Cria uma faceta por espécie
+  labs(title = "Facetas por Espécie")                    # Título
+ 
+# EXERCÍCIO 15 | ISLR::Auto
+# Faça horsepower (X) versus mpg (Y), com facet_wrap(~origin).
+# Interprete: a relação é semelhante nos três grupos de origem?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 15 -------------------
+ISLR::Auto
+ggplot(ISLR::Auto, aes(x = horsepower, y = mpg)) +
+  geom_point() +
+  facet_wrap(~cylinders) +
+  labs(title = "Potência e consumo por origem")
+# Interpretação esperada: Compare a inclinação e dispersão em cada origem; as amostras têm perfis distintos.
+ 
+# =================== 16. Facetas em grade ===================
+ggplot(diamonds, aes(x = price, fill = cut)) +        # Mapeia preço e preenchimento por corte
+  geom_histogram(binwidth = 500) +                    # Define largura dos bins
+  facet_grid(cut ~ clarity) +                         # Cria grade com corte vs clareza
+  labs(title = "Preço por Corte e Clareza")           # Título
+ 
+# EXERCÍCIO 16 | ISLR::Carseats
+# Faça histogramas de Sales com facet_grid(ShelveLoc ~ Urban).
+# Interprete: como a distribuição das vendas varia entre os painéis?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 16 -------------------
+ggplot(ISLR::Carseats, aes(x = Sales)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "white") +
+  facet_grid(ShelveLoc ~ Urban) +
+  labs(title = "Vendas por prateleira e localização")
+# Interpretação esperada: Compare posição, dispersão e frequência das vendas nos seis painéis.
+ 
+# =================== 17. Tema minimalista ===================
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +  # Mapeia sépala e espécie
+  geom_point(size = 3) +                            # Adiciona pontos maiores
+  theme_minimal() +                                 # Aplica tema clean
+  labs(title = "Gráfico com Tema Minimal")          # Título
+ 
+# EXERCÍCIO 17 | ISLR::Wage
+# Faça age (X) versus wage (Y), com color = education.
+# Use theme_minimal() e personalize título e rótulos dos eixos.
+# Interprete: há relação aparente entre idade, escolaridade e salário?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 17 -------------------
+ggplot(ISLR::Wage, aes(x = age, y = wage, color = education)) +
+  geom_point(alpha = 0.6) +
+  theme_minimal() +
+  labs(title = "Idade e salário por escolaridade", x = "Idade", y = "Salário", color = "Escolaridade")
+# Interpretação esperada: Há ampla dispersão; escolaridade e idade se relacionam com salários de modo não determinístico.
+ 
+# =================== 18. Anotação com texto ===================
+ggplot(mtcars, aes(x = wt, y = mpg)) +              # Mapeia peso e consumo
+  geom_point() +                                    # Adiciona pontos
+  annotate("text", x = 5, y = 30, label = "Exemplo anotado", color = "blue") +  # Adiciona anotação
+  labs(title = "Gráfico com Anotação")              # Título
+ 
+# EXERCÍCIO 18 | ISLR::Auto
+# Faça weight (X) versus mpg (Y) e adicione annotate("text", ...).
+# Escolha coordenadas e texto que destaquem uma região relevante.
+# Interprete: que informação a anotação acrescenta ao gráfico?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 18 -------------------
+ggplot(ISLR::Auto, aes(x = weight, y = mpg)) +
+  geom_point() +
+  annotate("text", x = 2000, y = 40, label = "Leves e econômicos", color = "blue") +
+  labs(title = "Peso e consumo com anotação")
+# Interpretação esperada: A anotação chama atenção para automóveis relativamente leves e com mpg elevado.
+ 
+# =================== 19. Rótulos nos pontos ===================
+ggplot(mtcars, aes(x = wt, y = mpg, label = rownames(mtcars))) +  # Mapeia rótulos com nomes dos carros
+  geom_point() +                                                   # Adiciona pontos
+  geom_text(size = 3, vjust = -0.5) +                              # Adiciona textos acima dos pontos
+  labs(title = "Labels nos Pontos")                                # Título
+ 
+# EXERCÍCIO 19 | ISLR::Auto
+# Filtre Auto para horsepower > 200 usando subset().
+# Faça horsepower (X) versus mpg (Y), usando label = name e geom_text().
+# Interprete: quais modelos se destacam por potência e consumo?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 19 -------------------
+auto_potentes <- subset(ISLR::Auto, horsepower > 200)
+auto_potentes
+auto_potentes_1<-ISLR::Auto%>%
+  filter(horsepower > 200)
+auto_potentes_1
+ 
+ggplot(auto_potentes_1, aes(x = horsepower, y = mpg, label = name)) +
+  geom_point() +
+  geom_text(size = 3, vjust = -0.5, check_overlap = TRUE) +
+  labs(title = "Automóveis com potência acima de 200 HP")
+# Interpretação esperada: Identifique os modelos rotulados e compare seus valores; potência alta não implica mpg igual.
+ 
+# =================== 20. Regressão linear ===================
+ggplot(mtcars, aes(x = hp, y = mpg)) +              # Mapeia HP e consumo
+  geom_point() +                                   # Adiciona pontos
+  geom_smooth(method = "lm", se = FALSE, color = "darkgreen") +  # Linha de regressão
+  labs(title = "Regressão Linear: HP vs MPG")       # Título
+ 
+# EXERCÍCIO 20 | ISLR::Auto
+# Faça weight (X) versus mpg (Y), adicionando reta com
+# geom_smooth(method = "lm", se = FALSE).
+# Interprete: a inclinação é positiva ou negativa? O que significa?
+ 
+# ------------------- RESPOSTA DO EXERCÍCIO 20 -------------------
+ggplot(ISLR::Auto, aes(x = weight, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "darkgreen") +
+  labs(title = "Regressão linear: peso e consumo")
+# Interpretação esperada: Inclinação negativa: veículos mais pesados tendem a percorrer menos milhas por galão.
